@@ -7,9 +7,32 @@
 //
 
 #include <iostream>
+#include <fstream>
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+void generateLargeRandomFile(const char *filePath)
+{
+    std::ofstream outfile (filePath,std::ofstream::binary);
+
+    long bufferSize = 1024;
+    char* buffer = new char[bufferSize];
+    
+    for (int i = 0; i < 1024 * 100; i++)
+    {
+        for (int j = 0; j < bufferSize; j++)
+        {
+            buffer[j] = rand() % 256;
+        }
+        outfile.write(buffer, bufferSize);
+    }
+    
+    delete[] buffer;
+    outfile.close();
+}
+
+int main(int argc, const char *argv[])
+{
+    const char *filePath = "large_file.txt";
+    std::cout << "File gererating started: " << filePath << std::endl << std::endl;
+    generateLargeRandomFile(filePath);
     return 0;
 }
