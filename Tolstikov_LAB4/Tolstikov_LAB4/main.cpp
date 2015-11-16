@@ -9,7 +9,7 @@
 #include <iostream>
 #include <fstream>
 
-#define TEST_RUNS_COUNT 10
+#define TEST_RUNS_COUNT 3
 
 void generateLargeRandomFile(const char *filePath)
 {
@@ -39,23 +39,20 @@ void generateLargeRandomFile(const char *filePath)
 
 double getReadFromDiskSpeed(const char *filePath)
 {
-    std::ifstream infile (filePath,std::ifstream::binary);
-    
+    std::streamsize bytesRead = 0;
+    const auto startTime = std::clock();
+
     long bufferSize = 1024 * 1024 * 1024;
     char* buffer = new char[bufferSize];
-    std::streamsize bytesRead = 0;
-    
-    const auto startTime = std::clock();
-    
+    std::ifstream infile (filePath,std::ifstream::binary);
     while(infile.read(buffer, bufferSize))
     {
         bytesRead += infile.gcount();
     }
-    
-    const auto endTime = std::clock();
-    
     delete[] buffer;
     infile.close();
+    
+    const auto endTime = std::clock();
     
     double totalTimeInSecs = double(endTime - startTime) / CLOCKS_PER_SEC;
     double speed = (bytesRead / (1024*1024)) / totalTimeInSecs;
